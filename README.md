@@ -1,4 +1,4 @@
-# blake-im
+# blake-personal-website
 
 A personal site: two static pages, no build step, no dependencies, no JavaScript.
 
