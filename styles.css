@@ -1,0 +1,218 @@
+/*
+  Shared by index.html and startups.html.
+  Colours are tokens on :root, with the dark-mode set right underneath.
+*/
+
+:root {
+  --bg: #ffffff;
+  --text: #0a0a0a;
+  --dim: #6b6b6b;
+  --rule: #e4e4e4;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --text: #f4f4f4;
+    --dim: #8f8f8f;
+    --rule: #242424;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 24px 120px;
+}
+
+/* ---- header ------------------------------------------------------ */
+
+header { padding: 28px 0 0; }
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.wordmark {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.connect {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--text);
+  border-radius: 2px;
+  padding: 6px 12px;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.connect:hover,
+.connect:focus-visible {
+  background: var(--text);
+  color: var(--bg);
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+nav a {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--dim);
+  text-decoration: none;
+}
+nav a:hover { color: var(--text); }
+nav a[aria-current="page"] {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---- content ----------------------------------------------------- */
+
+main { padding-top: 72px; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin: 0 0 18px;
+}
+
+h1 {
+  font-size: 30px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 36px;
+}
+
+h2 {
+  font-size: 19px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 40px 0 10px;
+}
+
+.layer-no {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+
+p { margin: 0 0 22px; }
+
+/* ---- the hierarchy of data needs --------------------------------- */
+/* A left-aligned staircase, Layer 1 first: every tier starts at the same
+   edge and runs further right as the maturity grows. Rectangles rather
+   than trapezoids, so the text stays horizontal and full size on a phone. */
+
+.pyramid {
+  margin: 0 0 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.tier {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 15px 18px;
+  border: 1px solid var(--text);
+  font-size: 15px;
+  line-height: 1.4;
+  text-align: left;
+}
+.tier-1 { width: 76%; }
+.tier-2 { width: 88%; }
+.tier-3 { width: 100%; }
+
+.tier-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  white-space: nowrap;
+}
+
+ul, ol {
+  margin: 0 0 22px;
+  padding-left: 22px;
+}
+li { margin: 0 0 8px; }
+li::marker { color: var(--dim); }
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+a:hover { text-decoration-thickness: 2px; }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 56px 0 36px;
+}
+
+footer {
+  margin-top: 72px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+}
+
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  main { padding-top: 48px; }
+  h1 { font-size: 25px; }
+  nav { gap: 16px; }
+  /* stacking the label over the title, still flush to the left edge */
+  .tier { flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px; }
+  .tier-1 { width: 86%; }
+  .tier-2 { width: 93%; }
+}
