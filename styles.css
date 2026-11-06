@@ -1,48 +1,86 @@
 /*
   Shared by index.html and startups.html.
   Colours are tokens on :root, with the dark-mode set right underneath.
+  Black and white only: the texture comes from soft radial fades on <body>
+  and a fixed film-grain layer (an inline SVG noise) on body::before.
 */
 
 :root {
-  --bg: #ffffff;
-  --text: #0a0a0a;
-  --dim: #6b6b6b;
-  --rule: #e4e4e4;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --bg: #f4f3f1;
+  --bg-deep: #dedcd8;
+  --glow: #ffffff;
+  --text: #111111;
+  --dim: #6a6a6a;
+  --rule: rgba(17, 17, 17, 0.12);
+  --tint: rgba(17, 17, 17, 0.045);
+  --grain-opacity: 0.16;
+  --grain-blend: multiply;
+
+  --serif: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0a0a0a;
-    --text: #f4f4f4;
-    --dim: #8f8f8f;
-    --rule: #242424;
+    --bg: #0c0c0c;
+    --bg-deep: #000000;
+    --glow: #262626;
+    --text: #ededed;
+    --dim: #8c8c8c;
+    --rule: rgba(237, 237, 237, 0.13);
+    --tint: rgba(237, 237, 237, 0.05);
+    --grain-opacity: 0.11;
+    --grain-blend: screen;
   }
 }
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg-deep);
+}
 
 body {
+  position: relative;
   margin: 0;
-  background: var(--bg);
+  min-height: 100vh;
   color: var(--text);
   font-family: var(--sans);
   font-size: 17px;
-  line-height: 1.65;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  /* a light source top-left, a second softer one lower right, fading to the edges */
+  background:
+    radial-gradient(ellipse 90% 60% at 20% 0%, var(--glow) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 50% at 90% 75%, var(--glow) 0%, transparent 70%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+}
+
+/* film grain */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 1.6 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
 }
 
 .page {
-  max-width: 680px;
+  position: relative;
+  z-index: 1;
+  max-width: 660px;
   margin: 0 auto;
   padding: 0 24px 120px;
 }
 
 /* ---- header ------------------------------------------------------ */
 
-header { padding: 28px 0 0; }
+header { padding: 32px 0 0; }
 
 .bar {
   display: flex;
@@ -52,23 +90,24 @@ header { padding: 28px 0 0; }
 }
 
 .wordmark {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: 0.02em;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--text);
   text-decoration: none;
 }
 
 .connect {
-  font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text);
   text-decoration: none;
   border: 1px solid var(--text);
-  border-radius: 2px;
-  padding: 6px 12px;
+  border-radius: 999px;
+  padding: 7px 16px;
   white-space: nowrap;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 .connect:hover,
 .connect:focus-visible {
@@ -78,73 +117,80 @@ header { padding: 28px 0 0; }
 
 nav {
   display: flex;
-  gap: 22px;
+  gap: 24px;
   margin-top: 22px;
   padding-top: 14px;
-  border-top: 1px solid var(--rule);
+  /* a rule that fades out at both ends */
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, var(--rule) 15%, var(--rule) 85%, transparent) 1;
 }
 nav a {
-  font-family: var(--mono);
-  font-size: 13px;
+  font-size: 15px;
   color: var(--dim);
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 nav a:hover { color: var(--text); }
 nav a[aria-current="page"] {
   color: var(--text);
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
 }
 
 /* ---- content ----------------------------------------------------- */
 
-main { padding-top: 72px; }
+main { padding-top: 80px; }
 
 .eyebrow {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--dim);
-  margin: 0 0 18px;
+  margin: 0 0 16px;
+}
+
+h1, h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: 30px;
-  line-height: 1.3;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  margin: 0 0 36px;
+  font-size: 44px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 40px;
 }
 
 h2 {
-  font-size: 19px;
-  line-height: 1.4;
-  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.3;
   letter-spacing: -0.01em;
-  margin: 40px 0 10px;
+  margin: 48px 0 12px;
 }
 
 .layer-no {
   display: block;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--dim);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 p { margin: 0 0 22px; }
 
 /* ---- the hierarchy of data needs --------------------------------- */
 /* A left-aligned staircase, Layer 1 first: every tier starts at the same
-   edge and runs further right as the maturity grows. Rectangles rather
-   than trapezoids, so the text stays horizontal and full size on a phone. */
+   edge and runs further right as the maturity grows. All tiers share the
+   same border and fade, so only the width changes. */
 
 .pyramid {
-  margin: 0 0 48px;
+  margin: 0 0 56px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -155,22 +201,24 @@ p { margin: 0 0 22px; }
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  padding: 15px 18px;
-  border: 1px solid var(--text);
-  font-size: 15px;
+  padding: 16px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-size: 16px;
   line-height: 1.4;
   text-align: left;
+  background: linear-gradient(90deg, var(--tint), transparent);
 }
 .tier-1 { width: 76%; }
 .tier-2 { width: 88%; }
 .tier-3 { width: 100%; }
 
 .tier-n {
-  font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: 0.06em;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--dim);
   white-space: nowrap;
@@ -180,39 +228,43 @@ ul, ol {
   margin: 0 0 22px;
   padding-left: 22px;
 }
-li { margin: 0 0 8px; }
+li { margin: 0 0 10px; padding-left: 4px; }
 li::marker { color: var(--dim); }
 
 a {
   color: inherit;
   text-decoration: underline;
+  text-decoration-color: var(--dim);
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.15s ease;
 }
-a:hover { text-decoration-thickness: 2px; }
+a:hover { text-decoration-color: var(--text); }
 
 hr {
   border: 0;
-  border-top: 1px solid var(--rule);
-  margin: 56px 0 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
+  margin: 64px 0 40px;
 }
 
 footer {
-  margin-top: 72px;
+  margin-top: 80px;
   padding-top: 20px;
-  border-top: 1px solid var(--rule);
-  font-family: var(--mono);
-  font-size: 12px;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent, var(--rule) 15%, var(--rule) 85%, transparent) 1;
+  font-size: 13px;
   color: var(--dim);
 }
 
 @media (max-width: 520px) {
   body { font-size: 16px; }
-  main { padding-top: 48px; }
-  h1 { font-size: 25px; }
-  nav { gap: 16px; }
+  main { padding-top: 56px; }
+  h1 { font-size: 34px; }
+  h2 { font-size: 23px; }
+  nav { gap: 18px; }
   /* stacking the label over the title, still flush to the left edge */
-  .tier { flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px; }
+  .tier { flex-direction: column; align-items: flex-start; gap: 4px; padding: 13px 15px; }
   .tier-1 { width: 86%; }
   .tier-2 { width: 93%; }
 }
